@@ -20,19 +20,7 @@ import { assignmentsRouter } from './domains/assignments/router';
 const router = Router();
 
 // Health check endpoint
-router.get('/', () =>
-	new Response(JSON.stringify({
-		message: 'Task Management API',
-		version: '1.0.0',
-		endpoints: {
-			tasks: '/tasks',
-			users: '/users',
-			assignments: '/tasks/:id/assign, /users/:id/tasks'
-		}
-	}), {
-		headers: { 'Content-Type': 'application/json' }
-	})
-);
+router.get('/', () => new Response('OK'));
 
 // Register domain routers
 router.all('/tasks/*', tasksRouter.fetch);
