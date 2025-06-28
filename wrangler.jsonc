@@ -9,7 +9,15 @@
 	"compatibility_date": "2025-06-28",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+		  "binding": "DB",
+		  "database_name": "collars-db",
+		  "database_id": "432392c9-bc02-4e6e-a242-7336d46de9ee"
+		}
+	  ]
+
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
