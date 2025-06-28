@@ -2,25 +2,25 @@
 
 -- SQLite doesn't support enum, so we use TEXT and CHECK constraint
 CREATE TABLE users (
-  id TEXT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  phone_number TEXT,
-  role TEXT CHECK (role IN ('admin', 'user')) DEFAULT 'user',
+  email TEXT UNIQUE CHECK (instr(email, '@') > 1) NOT NULL,
+  phone_number TEXT NOT NULL,
+  role TEXT CHECK (role IN ('admin', 'user')) DEFAULT 'user' NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE addresses (
-  id TEXT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   address_line1 TEXT NOT NULL,
   address_line2 TEXT,
   city TEXT NOT NULL,
   state_or_province TEXT NOT NULL,
   postal_code TEXT NOT NULL,
   country TEXT NOT NULL,
-  is_default BOOLEAN DEFAULT FALSE,
-  user_id TEXT NOT NULL,
+  is_default BOOLEAN DEFAULT FALSE NOT NULL,
+  user_id INTEGER NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -38,4 +38,18 @@ CREATE INDEX idx_addresses_country ON addresses(country);         -- For filteri
 CREATE INDEX idx_addresses_city ON addresses(city);               -- For filtering by city
 CREATE INDEX idx_addresses_user_default ON addresses(user_id, is_default); -- Composite: user + default address
 
+-- 📊 TRIGGERS to update timestamps
 
+CREATE TRIGGER set_users_updated_at
+AFTER UPDATE ON users
+FOR EACH ROW
+BEGIN
+  UPDATE users SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
+
+CREATE TRIGGER set_addresses_updated_at
+AFTER UPDATE ON addresses
+FOR EACH ROW
+BEGIN
+  UPDATE addresses SET updated_at = CURRENT_TIMESTAMP WHERE id = OLD.id;
+END;
