@@ -2,7 +2,7 @@
 
 -- SQLite doesn't support enum, so we use TEXT and CHECK constraint
 CREATE TABLE users (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,  -- UUID generated in application
   name TEXT NOT NULL,
   email TEXT UNIQUE CHECK (instr(email, '@') > 1) NOT NULL,
   phone_number TEXT NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE addresses (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  id INTEGER PRIMARY KEY AUTOINCREMENT, -- UUID generated in application
   address_line1 TEXT NOT NULL,
   address_line2 TEXT,
   city TEXT NOT NULL,
