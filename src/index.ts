@@ -12,9 +12,9 @@
  */
 
 import { Router } from 'itty-router';
-import { tasksRouter } from './domains/tasks';
-import { usersRouter } from './domains/users';
-import { assignmentsRouter } from './domains/assignments';
+import { tasksRouter } from './domains/tasks/router';
+import { usersRouter } from './domains/users/router';
+import { assignmentsRouter } from './domains/assignments/router';
 
 // Main router that orchestrates all domain routers
 const router = Router();
