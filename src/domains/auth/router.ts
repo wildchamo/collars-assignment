@@ -1,6 +1,6 @@
-import { Router, RequestHandler } from 'itty-router';
+import { Router } from 'itty-router';
 import { loginHandler, logoutHandler } from './handlers';
-import { requireJSON, requireFields } from '../../middlewares';
+import { requireJSON, requireFields, requireAuth } from '../../middlewares';
 
 const authRouter = Router({ base: '/auth' });
 
@@ -12,6 +12,9 @@ authRouter.post('/login',
 );
 
 // POST /auth/logout - Logout user (invalidate token)
-authRouter.post('/logout', logoutHandler);
+authRouter.post('/logout',
+	requireAuth,
+	logoutHandler
+);
 
 export { authRouter };

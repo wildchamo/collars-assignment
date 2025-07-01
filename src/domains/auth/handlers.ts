@@ -9,11 +9,11 @@ import { logoutUserAllDevices } from '../../shared/token-versioning.utils';
 /**
  * Login handler - Authenticate user and return JWT token
  */
-export const loginHandler = async (request: IRequest): Promise<Response> => {
+export const loginHandler = async (request: IRequest, env: Env): Promise<Response> => {
 	try {
 		// Get parsed body from middleware
 		const { email, password } = (request as any).parsedBody as LoginRequest;
-		const { JWT_TOKEN, DB } = request.env as Env;
+		const { JWT_TOKEN, DB } = env as Env;
 
 		// Validate email format
 		if (!isValidEmail(email)) {
@@ -64,11 +64,12 @@ export const loginHandler = async (request: IRequest): Promise<Response> => {
 /**
  * Logout handler - Invalidate user session using token versioning
  */
-export const logoutHandler = async (request: IRequest): Promise<Response> => {
+export const logoutHandler = async (request: IRequest, env: Env): Promise<Response> => {
 	try {
-		const { JWT_TOKEN, DB } = request.env as Env;
+		const { JWT_TOKEN, DB } = env;
 
 		const requestHeader = request.headers.get('Authorization');
+		console.log(requestHeader)
 		const token = extractTokenFromHeader(requestHeader);
 
 		if (!token) {
