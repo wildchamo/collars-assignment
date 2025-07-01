@@ -47,16 +47,3 @@ export const verifyJWTLegacy = async (token: string, jwtSecret: string): Promise
 		return null;
 	}
 };
-
-/**
- * Extract token from Authorization header
- */
-export const extractTokenFromHeader = (authHeader: string | null): string | null => {
-	if (!authHeader) return null;
-
-	// Expected format: "Bearer <token>"
-	const parts = authHeader.split(' ');
-	if (parts.length !== 2 || parts[0] !== 'Bearer') return null;
-
-	return parts[1];
-};

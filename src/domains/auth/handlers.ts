@@ -1,6 +1,6 @@
 import { IRequest } from 'itty-router';
 import { AuthResponse, LoginRequest, AuthUser } from '../../shared/types';
-import { generateJWT, extractTokenFromHeader, verifyJWT } from '../../shared/jwt.utils';
+import { generateJWT, verifyJWT } from '../../shared/jwt.utils';
 import { userQueries } from '../../shared/database.utils';
 import { isValidEmail, isValidPassword } from '../../shared/validation.utils';
 import { errorResponses, successResponses } from '../../shared/response.utils';
@@ -68,10 +68,9 @@ export const logoutHandler = async (request: IRequest, env: Env): Promise<Respon
 	try {
 		const { JWT_TOKEN, DB } = env;
 
-		const requestHeader = request.headers.get('Authorization');
-		console.log(requestHeader)
-		const token = extractTokenFromHeader(requestHeader);
+		const token = (request as any).token;
 
+		console.log(token)
 		if (!token) {
 			return errorResponses.unauthorized('No token provided');
 		}

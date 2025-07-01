@@ -1,6 +1,6 @@
 import { IRequest } from 'itty-router';
 import { ApiResponse } from '../shared/types';
-import { extractTokenFromHeader, verifyJWT } from '../shared/jwt.utils';
+import { verifyJWT } from '../shared/jwt.utils';
 import { errorResponses } from '../shared/response.utils';
 
 /**
@@ -11,8 +11,7 @@ export const requireAuth = async (request: IRequest, env: Env): Promise<Response
 		const { JWT_TOKEN, DB } = env as Env;
 
 		// Extract token from Authorization header
-		const authHeader = request.headers.get('Authorization');
-		const token = extractTokenFromHeader(authHeader);
+		const token = request.headers.get('authorization');
 
 		if (!token) {
 			return errorResponses.unauthorized('No token provided');
