@@ -25,7 +25,7 @@ const router = Router();
 router.get('/', () => new Response('OK'));
 
 // Register domain routers
-router.all('/auth/*', (request, env, ctx) => authRouter.fetch(request, env, ctx));
+router.all('/auth/*', authRouter.fetch);
 router.all('/tasks/*', tasksRouter.fetch);
 router.all('/users/*', usersRouter.fetch);
 router.all('/tasks/*/assign', assignmentsRouter.fetch);

@@ -1,44 +1,40 @@
-import { IRequest, RequestHandler } from 'itty-router';
-import { ApiResponse, AuthResponse, LoginRequest, AuthUser } from '../../shared/types';
-
-import jwt from "@tsndr/cloudflare-worker-jwt"
+import { IRequest } from 'itty-router';
+import { AuthResponse, LoginRequest, AuthUser } from '../../shared/types';
+import { generateJWT } from '../../shared/jwt.utils';
+import { userQueries } from '../../shared/database.utils';
+import { isValidEmail, isValidPassword } from '../../shared/validation.utils';
+import { errorResponses, successResponses } from '../../shared/response.utils';
 
 /**
  * Login handler - Authenticate user and return JWT token
  */
-export const loginHandler = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response> => {
+export const loginHandler = async (request: IRequest): Promise<Response> => {
 	try {
 		// Get parsed body from middleware
 		const { email, password } = (request as any).parsedBody as LoginRequest;
-		const { JWT_TOKEN, DB } = env;
+		const { JWT_TOKEN, DB } = request.env as Env;
 
+		// Validate email format
+		if (!isValidEmail(email)) {
+			return errorResponses.badRequest('Invalid email format');
+		}
 
-		// Query user from database
-		const userQuery = await DB.prepare(
-			'SELECT id, name, email, role, password FROM users WHERE email = ?'
-		).bind(email).first();
+		// Validate password
+		const passwordValidation = isValidPassword(password);
+		if (!passwordValidation.isValid) {
+			return errorResponses.badRequest(passwordValidation.message!);
+		}
+
+		// Query user from database using utility
+		const userQuery = await userQueries.findByEmail(DB, email);
 
 		if (!userQuery) {
-			const response: ApiResponse = {
-				success: false,
-				error: 'This email is not registered'
-			};
-			return new Response(JSON.stringify(response), {
-				status: 401,
-				headers: { 'Content-Type': 'application/json' }
-			});
+			return errorResponses.unauthorized('This email is not registered');
 		}
 
 		// Simple password check (in production, use proper hashing)
 		if (userQuery.password !== password) {
-			const response: ApiResponse = {
-				success: false,
-				error: 'Invalid credentials'
-			};
-			return new Response(JSON.stringify(response), {
-				status: 401,
-				headers: { 'Content-Type': 'application/json' }
-			});
+			return errorResponses.unauthorized('Invalid credentials');
 		}
 
 		// Create auth user object
@@ -49,71 +45,35 @@ export const loginHandler = async (request: IRequest, env: Env, ctx: ExecutionCo
 			role: userQuery.role as 'admin' | 'user'
 		};
 
-		// Generate JWT token
-		const token = await jwt.sign({
-			userId: authUser.id,
-			email: authUser.email,
-			role: authUser.role,
-			timestamp: Date.now()
-		}, JWT_TOKEN);
+		// Generate JWT token using utility
+		const token = await generateJWT(authUser, JWT_TOKEN);
 
-		const response: ApiResponse<AuthResponse> = {
-			success: true,
-			data: {
-				token: token
-			}
+		const authResponse: AuthResponse = {
+			token: token
 		};
 
-		return new Response(JSON.stringify(response), {
-			status: 200,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return successResponses.ok(authResponse);
 
 	} catch (error) {
 		console.error('Login error:', error);
-		const response: ApiResponse = {
-			success: false,
-			error: 'Internal server error'
-		};
-		return new Response(JSON.stringify(response), {
-			status: 500,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return errorResponses.internalError();
 	}
 };
 
 /**
  * Logout handler - Invalidate user session
  */
-export const logoutHandler = async (request: Request, env: Env): Promise<Response> => {
+export const logoutHandler = async (request: IRequest): Promise<Response> => {
 	try {
 		// In a real implementation, you would:
-		// 1. Extract token from Authorization header
+		// 1. Extract token from Authorization header using extractTokenFromHeader
 		// 2. Add token to a blacklist/invalidate it
 		// 3. Clear any server-side sessions
 
-		// For now, just return success
-		const response: ApiResponse = {
-			success: true,
-			data: { message: 'Logged out successfully' }
-		};
-
-		console.log(env)
-
-		return new Response(JSON.stringify(response), {
-			status: 200,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return successResponses.ok({ message: 'Logged out successfully' });
 
 	} catch (error) {
 		console.error('Logout error:', error);
-		const response: ApiResponse = {
-			success: false,
-			error: 'Internal server error'
-		};
-		return new Response(JSON.stringify(response), {
-			status: 500,
-			headers: { 'Content-Type': 'application/json' }
-		});
+		return errorResponses.internalError();
 	}
 };
