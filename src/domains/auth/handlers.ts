@@ -5,54 +5,11 @@ import jwt from "@tsndr/cloudflare-worker-jwt"
 
 
 export class AuthHandlers {
-	static async login(request: IRequest, env: Env): Promise<Response> {
+	static async login(request: IRequest): Promise<Response> {
 		try {
-			// Check if request has body
-			if (!request.body) {
-				const response: ApiResponse = {
-					success: false,
-					error: 'Request body is required'
-				};
-				return new Response(JSON.stringify(response), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
-
-			let requestBody: LoginRequest;
-
-			try {
-				requestBody = await request.json() as LoginRequest;
-			} catch (parseError) {
-				const response: ApiResponse = {
-					success: false,
-					error: 'Invalid JSON format'
-				};
-				return new Response(JSON.stringify(response), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
-
-
-
-			const { email, password } = requestBody;
-			const { JWT_TOKEN, DB } = env;
-
-
-			console.log(JWT_TOKEN);
-
-			// Validate request body
-			if (!email || !password) {
-				const response: ApiResponse = {
-					success: false,
-					error: 'Email and password are required'
-				};
-				return new Response(JSON.stringify(response), {
-					status: 400,
-					headers: { 'Content-Type': 'application/json' }
-				});
-			}
+			// Get parsed body from middleware
+			const { email, password } = (request as any).parsedBody as LoginRequest;
+			const { JWT_TOKEN, DB } = request.env as Env;
 
 			// Query user from database
 			const userQuery = await DB.prepare(
@@ -90,7 +47,7 @@ export class AuthHandlers {
 				role: userQuery.role as 'admin' | 'user'
 			};
 
-			// Generate simple token (in production, use JWT)
+			// Generate JWT token
 			const token = await jwt.sign({
 				userId: authUser.id,
 				email: authUser.email,
