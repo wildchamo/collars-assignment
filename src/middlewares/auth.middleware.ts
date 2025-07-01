@@ -13,15 +13,19 @@ export const requireAuth = async (request: IRequest, env: Env): Promise<Response
 		// Extract token from Authorization header
 		const token = request.headers.get('authorization');
 
+		console.log(token)
+
 		if (!token) {
 			return errorResponses.unauthorized('No token provided');
 		}
 
 		// Verify token and validate version
 		const payload = await verifyJWT(token, JWT_TOKEN, DB);
+
 		if (!payload) {
 			return errorResponses.unauthorized('Invalid or expired token');
 		}
+
 
 		// Attach user info to request for next handlers
 		(request as any).user = {
@@ -40,12 +44,20 @@ export const requireAuth = async (request: IRequest, env: Env): Promise<Response
 	}
 	// If successful, continue to next handler
 };
+
 /**
  * Middleware to check if user has admin role
- * Should be used after requireAuth middleware
+ * Should be used AFTER requireAuth middleware
  */
-export const requireAdmin = (request: IRequest): Response | void => {
+export const requireAdmin = async (request: IRequest, env: Env): Promise<Response | void> => {
+	// First run requireAuth to extract and validate user info
+
+	await requireAuth(request, env);
+
+	// At this point, user info should be attached to request by requireAuth
 	const user = (request as any).user;
+
+	console.log(user)
 
 	if (!user) {
 		return errorResponses.unauthorized('Authentication required');

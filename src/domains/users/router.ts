@@ -1,5 +1,6 @@
 import { Router } from 'itty-router';
 import { UserHandlers } from './handlers';
+import { requireAdmin } from '../../middlewares';
 
 const usersRouter = Router({ base: '/users' });
 
@@ -10,6 +11,6 @@ usersRouter.get('/', UserHandlers.getAllUsers);
 usersRouter.get('/:id', UserHandlers.getUserById);
 
 // POST /users - Create a new user
-usersRouter.post('/', UserHandlers.createUser);
+usersRouter.post('/', requireAdmin, UserHandlers.createUser);
 
 export { usersRouter };

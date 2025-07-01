@@ -33,25 +33,10 @@ export class UserHandlers {
 		});
 	}
 
-	static async createUser(request: IRequest): Promise<Response> {
+	static async createUser(request: IRequest) {
 		try {
-			// TODO: Validate request body
-			// const body = await request.json();
 
-			const response: ApiResponse<User> = {
-				success: true,
-				data: {
-					id: crypto.randomUUID(),
-					name: 'New User',
-					email: 'newuser@example.com',
-					createdAt: new Date()
-				}
-			};
-
-			return new Response(JSON.stringify(response), {
-				status: 201,
-				headers: { 'Content-Type': 'application/json' }
-			});
+			console.log(request)
 		} catch (error) {
 			const response: ApiResponse = {
 				success: false,

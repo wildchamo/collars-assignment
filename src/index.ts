@@ -26,8 +26,8 @@ router.get('/', () => new Response('OK'));
 
 // Register domain routers
 router.all('/auth/*', authRouter.fetch);
-router.all('/tasks/*', tasksRouter.fetch);
 router.all('/users/*', usersRouter.fetch);
+router.all('/tasks/*', tasksRouter.fetch);
 router.all('/tasks/*/assign', assignmentsRouter.fetch);
 router.all('/users/*/tasks', assignmentsRouter.fetch);
 
