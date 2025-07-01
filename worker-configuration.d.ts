@@ -4,10 +4,12 @@
 declare namespace Cloudflare {
 	interface Env {
 		DB: D1Database;
-		JWT_TOKEN: string;
 	}
 }
-interface Env extends Cloudflare.Env { }
+interface Env extends Cloudflare.Env {
+	JWT_TOKEN: string;
+
+}
 
 // Begin runtime types
 /*! *****************************************************************************

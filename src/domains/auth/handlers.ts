@@ -5,11 +5,42 @@ import jwt from "@tsndr/cloudflare-worker-jwt"
 
 
 export class AuthHandlers {
-	static async login(request: IRequest): Promise<Response> {
+	static async login(request: IRequest, env: Env): Promise<Response> {
 		try {
-			const { email, password }: LoginRequest = await request.json();
-			const { JWT_TOKEN, DB } = request.env as Env;
+			// Check if request has body
+			if (!request.body) {
+				const response: ApiResponse = {
+					success: false,
+					error: 'Request body is required'
+				};
+				return new Response(JSON.stringify(response), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' }
+				});
+			}
 
+			let requestBody: LoginRequest;
+
+			try {
+				requestBody = await request.json() as LoginRequest;
+			} catch (parseError) {
+				const response: ApiResponse = {
+					success: false,
+					error: 'Invalid JSON format'
+				};
+				return new Response(JSON.stringify(response), {
+					status: 400,
+					headers: { 'Content-Type': 'application/json' }
+				});
+			}
+
+
+
+			const { email, password } = requestBody;
+			const { JWT_TOKEN, DB } = env;
+
+
+			console.log(JWT_TOKEN);
 
 			// Validate request body
 			if (!email || !password) {
@@ -80,6 +111,7 @@ export class AuthHandlers {
 			});
 
 		} catch (error) {
+			console.error('Login error:', error);
 			const response: ApiResponse = {
 				success: false,
 				error: 'Internal server error'
@@ -110,6 +142,7 @@ export class AuthHandlers {
 			});
 
 		} catch (error) {
+			console.error('Logout error:', error);
 			const response: ApiResponse = {
 				success: false,
 				error: 'Internal server error'

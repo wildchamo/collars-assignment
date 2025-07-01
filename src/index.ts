@@ -34,7 +34,8 @@ router.all('/users/*/tasks', assignmentsRouter.fetch);
 router.all('*', () => new Response('Not found', { status: 404 }));
 
 export default {
-	async fetch(request, env: Cloudflare.Env, ctx): Promise<Response> {
+	async fetch(request, env: Env, ctx): Promise<Response> {
+		console.log(env.JWT_TOKEN);
 		return router.fetch(request, env, ctx);
 	},
-} satisfies ExportedHandler<Cloudflare.Env>;
+} satisfies ExportedHandler<Env>;
