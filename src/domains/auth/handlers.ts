@@ -7,11 +7,12 @@ import jwt from "@tsndr/cloudflare-worker-jwt"
 export class AuthHandlers {
 	static async login(request: IRequest): Promise<Response> {
 		try {
-			const body: LoginRequest = await request.json();
-			const env = request.env as Env;
+			const { email, password }: LoginRequest = await request.json();
+			const { JWT_TOKEN, DB } = request.env as Env;
+
 
 			// Validate request body
-			if (!body.email || !body.password) {
+			if (!email || !password) {
 				const response: ApiResponse = {
 					success: false,
 					error: 'Email and password are required'
@@ -23,14 +24,14 @@ export class AuthHandlers {
 			}
 
 			// Query user from database
-			const userQuery = await env.DB.prepare(
+			const userQuery = await DB.prepare(
 				'SELECT id, name, email, role, password FROM users WHERE email = ?'
-			).bind(body.email).first();
+			).bind(email).first();
 
 			if (!userQuery) {
 				const response: ApiResponse = {
 					success: false,
-					error: 'Invalid credentials'
+					error: 'This email is not registered'
 				};
 				return new Response(JSON.stringify(response), {
 					status: 401,
@@ -39,7 +40,7 @@ export class AuthHandlers {
 			}
 
 			// Simple password check (in production, use proper hashing)
-			if (userQuery.password !== body.password) {
+			if (userQuery.password !== password) {
 				const response: ApiResponse = {
 					success: false,
 					error: 'Invalid credentials'
@@ -59,17 +60,16 @@ export class AuthHandlers {
 			};
 
 			// Generate simple token (in production, use JWT)
-			const token = btoa(JSON.stringify({
+			const token = await jwt.sign({
 				userId: authUser.id,
 				email: authUser.email,
 				role: authUser.role,
 				timestamp: Date.now()
-			}));
+			}, JWT_TOKEN);
 
 			const response: ApiResponse<AuthResponse> = {
 				success: true,
 				data: {
-					user: authUser,
 					token: token
 				}
 			};
