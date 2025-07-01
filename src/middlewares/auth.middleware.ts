@@ -67,5 +67,7 @@ export const requireAdmin = async (request: IRequest, env: Env): Promise<Respons
 		return errorResponses.forbidden('Admin access required');
 	}
 
+
+	console.log("IS ADMIN")
 	// If user is admin, continue to next handler
 };
