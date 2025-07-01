@@ -15,6 +15,7 @@ import { Router } from 'itty-router';
 import { tasksRouter } from './domains/tasks/router';
 import { usersRouter } from './domains/users/router';
 import { assignmentsRouter } from './domains/assignments/router';
+import { authRouter } from './domains/auth/router';
 
 // Main router that orchestrates all domain routers
 const router = Router();
@@ -23,6 +24,7 @@ const router = Router();
 router.get('/', () => new Response('OK'));
 
 // Register domain routers
+router.all('/auth/*', authRouter.fetch);
 router.all('/tasks/*', tasksRouter.fetch);
 router.all('/users/*', usersRouter.fetch);
 router.all('/tasks/*/assign', assignmentsRouter.fetch);
@@ -32,7 +34,7 @@ router.all('/users/*/tasks', assignmentsRouter.fetch);
 router.all('*', () => new Response('Not found', { status: 404 }));
 
 export default {
-	async fetch(request, env: Env, ctx): Promise<Response> {
+	async fetch(request, env: Cloudflare.Env, ctx): Promise<Response> {
 		return router.fetch(request, env, ctx);
 	},
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<Cloudflare.Env>;
