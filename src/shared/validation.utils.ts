@@ -14,7 +14,7 @@ export const isValidPassword = (password: string): { isValid: boolean; message?:
 		return { isValid: false, message: 'Password is required' };
 	}
 
-	if (password.length < 6) {
+	if (password.length < 4) {
 		return { isValid: false, message: 'Password must be at least 6 characters long' };
 	}
 

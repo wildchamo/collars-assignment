@@ -57,6 +57,7 @@ export interface JWTPayload {
 	userId: string;
 	email: string;
 	role: 'admin' | 'user';
+	tokenVersion: number;
 	iat: number;
 	exp: number;
 }

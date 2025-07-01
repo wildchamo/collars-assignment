@@ -1,9 +1,10 @@
 import { IRequest } from 'itty-router';
 import { AuthResponse, LoginRequest, AuthUser } from '../../shared/types';
-import { generateJWT } from '../../shared/jwt.utils';
+import { generateJWT, extractTokenFromHeader, verifyJWT } from '../../shared/jwt.utils';
 import { userQueries } from '../../shared/database.utils';
 import { isValidEmail, isValidPassword } from '../../shared/validation.utils';
 import { errorResponses, successResponses } from '../../shared/response.utils';
+import { logoutUserAllDevices } from '../../shared/token-versioning.utils';
 
 /**
  * Login handler - Authenticate user and return JWT token
@@ -45,8 +46,8 @@ export const loginHandler = async (request: IRequest): Promise<Response> => {
 			role: userQuery.role as 'admin' | 'user'
 		};
 
-		// Generate JWT token using utility
-		const token = await generateJWT(authUser, JWT_TOKEN);
+		// Generate JWT token with versioning
+		const token = await generateJWT(authUser, JWT_TOKEN, DB);
 
 		const authResponse: AuthResponse = {
 			token: token
@@ -61,16 +62,29 @@ export const loginHandler = async (request: IRequest): Promise<Response> => {
 };
 
 /**
- * Logout handler - Invalidate user session
+ * Logout handler - Invalidate user session using token versioning
  */
 export const logoutHandler = async (request: IRequest): Promise<Response> => {
 	try {
-		// In a real implementation, you would:
-		// 1. Extract token from Authorization header using extractTokenFromHeader
-		// 2. Add token to a blacklist/invalidate it
-		// 3. Clear any server-side sessions
+		const { JWT_TOKEN, DB } = request.env as Env;
 
-		return successResponses.ok({ message: 'Logged out successfully' });
+		const requestHeader = request.headers.get('Authorization');
+		const token = extractTokenFromHeader(requestHeader);
+
+		if (!token) {
+			return errorResponses.unauthorized('No token provided');
+		}
+
+		// Verify token and get user info
+		const payload = await verifyJWT(token, JWT_TOKEN, DB);
+		if (!payload) {
+			return errorResponses.unauthorized('Invalid token');
+		}
+
+		// Invalidate all user tokens by incrementing token version
+		await logoutUserAllDevices(DB, payload.userId);
+
+		return successResponses.ok({ message: 'Logged out successfully from all devices' });
 
 	} catch (error) {
 		console.error('Logout error:', error);

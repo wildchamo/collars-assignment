@@ -1,31 +1,47 @@
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { AuthUser, JWTPayload } from './types';
+import { createTokenPayloadWithVersion, isTokenVersionValid } from './token-versioning.utils';
 
 /**
- * Generate JWT token for authenticated user
+ * Generate JWT token for authenticated user with versioning
  */
-export const generateJWT = async (user: AuthUser, jwtSecret: string): Promise<string> => {
-	const payload: JWTPayload = {
-		userId: user.id,
-		email: user.email,
-		role: user.role,
-		iat: Math.floor(Date.now() / 1000), // Issued at
-		exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // Expires in 24 hours
-	};
-
+export const generateJWT = async (user: AuthUser, jwtSecret: string, db: D1Database): Promise<string> => {
+	const payload = await createTokenPayloadWithVersion(db, user);
 	return await jwt.sign(payload, jwtSecret);
 };
 
 /**
- * Verify JWT token and extract payload
+ * Verify JWT token and validate version
  */
-export const verifyJWT = async (token: string, jwtSecret: string): Promise<JWTPayload | null> => {
+export const verifyJWT = async (token: string, jwtSecret: string, db: D1Database): Promise<JWTPayload | null> => {
 	try {
 		const isValid = await jwt.verify(token, jwtSecret);
 		if (!isValid) return null;
 
-		const payload = jwt.decode(token);
-		return payload.payload as JWTPayload;
+		const decoded = jwt.decode(token);
+		const payload = decoded.payload as JWTPayload;
+
+		// Validate token version against user's current version
+		const isVersionValid = await isTokenVersionValid(db, payload.userId, payload.tokenVersion);
+		if (!isVersionValid) return null;
+
+		return payload;
+	} catch (error) {
+		console.error('JWT verification error:', error);
+		return null;
+	}
+};
+
+/**
+ * Legacy: Verify JWT token without version validation
+ */
+export const verifyJWTLegacy = async (token: string, jwtSecret: string): Promise<JWTPayload | null> => {
+	try {
+		const isValid = await jwt.verify(token, jwtSecret);
+		if (!isValid) return null;
+
+		const decoded = jwt.decode(token);
+		return decoded.payload as JWTPayload;
 	} catch (error) {
 		console.error('JWT verification error:', error);
 		return null;
