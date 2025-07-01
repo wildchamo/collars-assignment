@@ -6,10 +6,13 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   email TEXT UNIQUE CHECK (instr(email, '@') > 1) NOT NULL,
   phone_number TEXT NOT NULL,
+	password TEXT NOT NULL,
   role TEXT CHECK (role IN ('admin', 'user')) DEFAULT 'user' NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+
 
 CREATE TABLE addresses (
   id INTEGER PRIMARY KEY AUTOINCREMENT, -- UUID generated in application
