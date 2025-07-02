@@ -16,7 +16,29 @@
 		  "database_name": "collars-db",
 		  "database_id": "432392c9-bc02-4e6e-a242-7336d46de9ee"
 		}
-	  ]
+	  ],
+	  "unsafe": {
+		"bindings": [
+			{
+				"namespace_id": "1",
+				"name": "FREE_USER_RATE_LIMITER",
+				"type": "rate_limiter",
+				"simple" : {
+					"limit": 3,
+					"period": "60"
+				}
+			},
+			{
+				"namespace_id": "2",
+				"name": "LOGGED_USER_RATE_LIMITER",
+				"type": "rate_limiter",
+				"simple" : {
+					"limit": 100,
+					"period": "60"
+				}
+			}
+		]
+	  }
 
 	/**
 	 * Smart Placement

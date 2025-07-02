@@ -254,15 +254,14 @@ export const getAllTasksHandler = async (request, env, ctx) => { ... }
 
 ---
 
-testing,
 rate limit
 
 probar todos los endpoint
 
 bonus
 
+testing,
 testing approach
+testing
 
 architecture decisions
-
-testing
