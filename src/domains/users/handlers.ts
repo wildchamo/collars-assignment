@@ -1,5 +1,5 @@
 import { IRequest } from 'itty-router';
-import { ApiResponse, User } from '../../shared/types';
+import { ApiResponse } from '../../shared/types';
 import { userQueries } from '../../shared/database.utils';
 import { isValidEmail, isValidPassword } from '../../shared/validation.utils';
 import { errorResponses, successResponses } from '../../shared/response.utils';
@@ -7,16 +7,19 @@ import { errorResponses, successResponses } from '../../shared/response.utils';
 /**
  * Get all users handler
  */
-export const getAllUsersHandler = async (request: IRequest): Promise<Response> => {
-	// TODO: Implement users retrieval logic
-	const response: ApiResponse<User[]> = {
-		success: true,
-		data: [] // Mock data for now
-	};
+export const getAllUsersHandler = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response> => {
+	try {
+		const { DB } = env as Env;
 
-	return new Response(JSON.stringify(response), {
-		headers: { 'Content-Type': 'application/json' }
-	});
+		const response = await DB.prepare('SELECT id, name, email, role, phone_number FROM users').all();
+
+		const users = response.results;
+
+		return successResponses.ok(users);
+	} catch (error) {
+		console.error('Get all users error:', error);
+		return errorResponses.internalError();
+	}
 };
 
 /**

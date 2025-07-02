@@ -6,7 +6,7 @@ import { errorResponses } from '../shared/response.utils';
 /**
  * Middleware to verify JWT token and attach user info to request
  */
-export const requireAuth = async (request: IRequest, env: Env): Promise<Response | void> => {
+export const requireAuth = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response | void> => {
 	try {
 		const { JWT_TOKEN, DB } = env as Env;
 
@@ -52,7 +52,7 @@ export const requireAuth = async (request: IRequest, env: Env): Promise<Response
 export const requireAdmin = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response | void> => {
 	// First run requireAuth to extract and validate user info
 
-	await requireAuth(request, env);
+	await requireAuth(request, env, ctx);
 
 	// At this point, user info should be attached to request by requireAuth
 	const user = (request as any).user;

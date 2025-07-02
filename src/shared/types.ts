@@ -8,14 +8,6 @@ export interface Task {
 	updatedAt: Date;
 }
 
-export interface User {
-	id: string;
-	name: string;
-	email: string;
-	phoneNumber?: string;
-	role: 'admin' | 'user';
-	createdAt: Date;
-}
 
 export interface TaskAssignment {
 	taskId: string;

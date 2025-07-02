@@ -1,0 +1,15 @@
+meta {
+  name: get all users
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8787/users
+  body: none
+  auth: inherit
+}
+
+headers {
+  authorization: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsImVtYWlsIjoiam9obi5kb2VAZXhhbXBsZS5jb20iLCJyb2xlIjoidXNlciIsInRva2VuVmVyc2lvbiI6MSwiaWF0IjoxNzUxNDM5NjQwLCJleHAiOjE3NTE1MjYwNDB9.s2HHGwWoemb-6KNvV5w7ym0yUhIzQsx0vyAIXg-8Tl8
+}
