@@ -30,7 +30,7 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 		key = `${pathname}-free-user`;
 
 		console.log(key)
-		const { success } = await FREE_USER_RATE_LIMITER.limit(key);
+		const { success } = await FREE_USER_RATE_LIMITER.limit({ key });
 
 		// If limit is exceeded, return 429 error (Too Many Requests)
 		if (!success) {
@@ -41,7 +41,7 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 		// Generate a unique key combining endpoint and user token
 		// This allows individual limits per authenticated user
 		key = `${pathname}-logged-user-${token}`;
-		const { success } = await LOGGED_USER_RATE_LIMITER.limit(key);
+		const { success } = await LOGGED_USER_RATE_LIMITER.limit({ key });
 
 		// If limit is exceeded, return 429 error (Too Many Requests)
 		if (!success) {

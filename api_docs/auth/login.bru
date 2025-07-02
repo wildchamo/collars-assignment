@@ -5,7 +5,7 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/auth/login
+  url: {{baseUrl}}/auth/
   body: json
   auth: none
 }
@@ -23,13 +23,13 @@ body:json {
 
 docs {
   # Login
-
+  
   Authenticate user and get JWT token.
-
+  
   ## Required Fields:
   - `email`: User email address
   - `password`: User password
-
+  
   ## Response:
   ```json
   {
@@ -39,7 +39,7 @@ docs {
     }
   }
   ```
-
+  
   ## Usage:
   1. Use this endpoint to get your JWT token
   2. Copy the token from the response
