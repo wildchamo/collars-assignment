@@ -79,7 +79,7 @@ export const createUserHandler = async (request: IRequest, env: Env, ctx: Execut
 
 		// Insert user into database
 		const result = await DB.prepare(
-			'INSERT INTO users (name, email, password, role, phoneNumber) VALUES (?, ?, ?, ?, ?)'
+			'INSERT INTO users (name, email, password, role, phone_number) VALUES (?, ?, ?, ?, ?)'
 		).bind(
 			name,
 			email,
