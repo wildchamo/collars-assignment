@@ -1,0 +1,38 @@
+meta {
+  name: Logout
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/logout
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+docs {
+  # Logout
+
+  Invalidate user session and logout from all devices.
+
+  ## Headers:
+  - `Authorization`: Bearer token (required)
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "message": "Logged out successfully from all devices"
+    }
+  }
+  ```
+
+  ## Note:
+  This endpoint invalidates the current token and logs the user out from all devices by incrementing the token version.
+}

@@ -1,0 +1,83 @@
+meta {
+  name: Update Task
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+body:json {
+  {
+    "title": "Implementar autenticación JWT - ACTUALIZADA",
+    "status": "in_progress",
+    "priority": "medium",
+    "dueDate": "2024-01-20T15:30:00.000Z",
+    "assignedTo": "67890"
+  }
+}
+
+docs {
+  # Update Task
+
+  Update an existing task. All fields are optional - only provided fields will be updated.
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Optional Fields (partial update):
+  - `title`: Task title (string)
+  - `description`: Task description (string)
+  - `status`: pending, in_progress, completed
+  - `priority`: low, medium, high
+  - `dueDate`: Due date (ISO timestamp)
+  - `assignedTo`: User ID to assign task (nullable)
+
+  ## Auto-updated Fields:
+  - `updatedAt`: Automatically set to current timestamp
+
+  ## Examples:
+
+  ### Update only status:
+  ```json
+  {
+    "status": "completed"
+  }
+  ```
+
+  ### Update multiple fields:
+  ```json
+  {
+    "title": "Updated Task Title",
+    "priority": "high",
+    "dueDate": "2024-01-25T12:00:00.000Z"
+  }
+  ```
+
+  ### Reassign task:
+  ```json
+  {
+    "assignedTo": "new-user-id-456",
+    "status": "pending"
+  }
+  ```
+
+  ### Remove assignment:
+  ```json
+  {
+    "assignedTo": null
+  }
+  ```
+}

@@ -1,0 +1,48 @@
+meta {
+  name: Login
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "email": "admin@example.com",
+    "password": "admin123"
+  }
+}
+
+docs {
+  # Login
+
+  Authenticate user and get JWT token.
+
+  ## Required Fields:
+  - `email`: User email address
+  - `password`: User password
+
+  ## Response:
+  ```json
+  {
+    "success": true,
+    "data": {
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  }
+  ```
+
+  ## Usage:
+  1. Use this endpoint to get your JWT token
+  2. Copy the token from the response
+  3. Update the `authToken` variable in your environment
+  4. Use the token for all other API calls
+}

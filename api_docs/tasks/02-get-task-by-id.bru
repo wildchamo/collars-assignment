@@ -1,0 +1,38 @@
+meta {
+  name: Get Task by ID
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+docs {
+  # Get Task by ID
+
+  Retrieve a specific task by its ID.
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Response:
+  Returns the complete task object with all fields:
+  - id, title, description, status, priority
+  - dueDate, assignedTo, createdBy
+  - createdAt, updatedAt
+
+  ## Example:
+  `GET /tasks/123`
+}

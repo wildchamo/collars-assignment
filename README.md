@@ -1,109 +1,241 @@
-# Task Management API - DDD Architecture
+# Task Management API
 
-Este proyecto implementa una API de gestión de tareas usando **Domain-Driven Design (DDD)** con **Cloudflare Workers** e **itty-router**.
+A complete task management API built with **Cloudflare Workers**, **TypeScript**, and **D1 Database** (SQLite).
 
-## 🏗️ Arquitectura DDD
+## 🚀 Implemented Features
 
-La aplicación está organizada siguiendo los principios de DDD, separando la lógica de negocio en dominios específicos:
+### ✅ **Complete Authentication & Authorization**
+
+- **JWT Authentication** with custom middleware
+- **Role-based Access Control** (Admin/User)
+- **Token Versioning** for logout from all devices
+- **Token Blacklist** for secure invalidation
+- `requireAuth` and `requireAdmin` middleware
+
+### ✅ **Complete Task CRUD**
+
+- **GET /tasks** - List with advanced pagination and filters
+- **GET /tasks/:id** - Get specific task
+- **POST /tasks** - Create new task
+- **PUT /tasks/:id** - Update task (partial)
+- **DELETE /tasks/:id** - Delete task
+
+### ✅ **Advanced Pagination & Filters**
+
+```
+GET /tasks?page=1&limit=10&status=pending&priority=high&sortBy=dueDate&sortOrder=ASC
+```
+
+- **Pagination**: `page`, `limit` (max 100)
+- **Filters**: `status`, `priority`, `assignedTo`, `createdBy`
+- **Sorting**: By any field, ASC/DESC
+- **Metadata**: Total, pages, navigation
+
+### ✅ **Robust Validations**
+
+- **Email validation** with regex
+- **Password validation** with security criteria
+- **Required fields validation** with middleware
+- **Data type validation** (dates, UUIDs, enums)
+- **Related resource existence verification**
+
+### ✅ **Professional Error Handling**
+
+- **Standardized error responses** with appropriate HTTP codes
+- **Complete logging** with console.error in all handlers
+- **Exhaustive try/catch** in all operations
+- **Descriptive error messages** for debugging
+
+### ✅ **Modular Architecture**
+
+- **Consistent functional programming**
+- **Separation of concerns** by domains
+- **Reusable utilities** (database, JWT, validation, responses)
+- **Composable middleware** for cross-cutting functionality
+
+### ✅ **Optimized Database**
+
+- **Structured and versioned SQL migrations**
+- **Optimized queries** with indexes and pagination
+- **Prepared statements** for security
+- **Parallel queries** for better performance
+
+### ✅ **Complete Documentation**
+
+- **API Documentation** with Bruno + Markdown
+- **Usage examples** for all endpoints
+- **Configurable environment variables**
+- **JSDoc comments** throughout the code
+
+### ✅ **Serverless Deployment**
+
+- **Cloudflare Workers** for edge computing
+- **Integrated D1 Database**
+- **Environment variables** for configuration
+- **wrangler.jsonc** for deployment
+
+## 🏗️ **Project Architecture**
 
 ```
 src/
-├── index.ts                    # Router principal (Orchestrator)
-├── shared/                     # Tipos y utilidades compartidas
+├── domains/              # Organization by business domain
+│   ├── auth/            # Authentication (login, logout)
+│   ├── users/           # User management
+│   ├── tasks/           # Task management
+│   └── assignments/     # Assignments (pending)
+├── middlewares/         # Reusable middleware
+│   ├── auth.middleware.ts
+│   ├── require-*.middleware.ts
+│   └── index.ts
+├── shared/              # Shared utilities
+│   ├── database.utils.ts
+│   ├── jwt.utils.ts
+│   ├── response.utils.ts
+│   ├── validation.utils.ts
 │   └── types.ts
-└── domains/                    # Dominios de negocio
-    ├── tasks/                  # Dominio de Tareas
-    │   ├── router.ts          # Rutas específicas de tareas
-    │   └── handlers.ts        # Lógica de negocio de tareas
-    ├── users/                  # Dominio de Usuarios
-    │   ├── router.ts          # Rutas específicas de usuarios
-    │   └── handlers.ts        # Lógica de negocio de usuarios
-    └── assignments/            # Dominio de Asignaciones
-        ├── router.ts          # Rutas de asignación de tareas
-        └── handlers.ts        # Lógica de asignaciones
+└── index.ts            # Main entry point
 ```
 
-## 🎯 Principios DDD Aplicados
+## 📊 **Feature Status**
 
-### 1. **Separación por Dominios**
+### ✅ **Completed**
 
-- **Tasks Domain**: Gestión completa del ciclo de vida de tareas
-- **Users Domain**: Gestión de usuarios
-- **Assignments Domain**: Relación entre tareas y usuarios
+- [x] **Proper error handling and validation** - Implemented with validation utilities and standardized error responses
+- [x] **Environment variables for configuration** - Environment variables configured in wrangler.jsonc
+- [x] **Database migrations for schema setup** - Versioned SQL migrations in `/migrations`
+- [x] **Authentication and authorization (JWT)** - Complete system with custom middleware
+- [x] **API documentation (Bruno + Markdown)** - Complete documentation in `/api_docs`
+- [x] **Code comments and documentation** - JSDoc comments in all functions
+- [x] **Logging and monitoring capabilities** - Console.error in all handlers
+- [x] **Database query optimization techniques** - Optimized queries, pagination, prepared statements
+- [x] **Serverless deployment** - Cloudflare Workers configured
 
-### 2. **Separación de Responsabilidades**
+### 🔄 **In Progress / Pending**
 
-- **Routers**: Manejan solo el enrutamiento HTTP
-- **Handlers**: Contienen la lógica de negocio
-- **Types**: Definen los contratos de datos
+- [ ] **Unit tests with 80% code coverage** - Framework configured (Vitest) but tests pending
+- [ ] **CI/CD pipeline configuration** - GitHub Actions or similar pending
+- [ ] **Rate limiting to prevent abuse** - Implementation with Cloudflare Workers KV pending
+- [ ] **✨ AI Bonus Function** - GET /tasks/summary with AI pending
 
-### 3. **Composición de Routers**
+## 🛠️ **Technologies Used**
 
-- El router principal (`index.ts`) orquesta los routers de dominio
-- Cada dominio es independiente y reutilizable
+- **Runtime**: Cloudflare Workers
+- **Language**: TypeScript
+- **Database**: D1 Database (SQLite)
+- **Authentication**: JWT with custom middleware
+- **API Testing**: Bruno
+- **Validation**: Custom utility functions
+- **Architecture**: Functional programming + Domain-driven design
 
-## 📋 Endpoints Disponibles
+## 🚀 **Quick Start**
 
-### Task Management
-
-- `GET /tasks` - Obtener todas las tareas
-- `GET /tasks/:id` - Obtener tarea por ID
-- `POST /tasks` - Crear nueva tarea
-- `PUT /tasks/:id` - Actualizar tarea
-- `DELETE /tasks/:id` - Eliminar tarea
-
-### User Management
-
-- `GET /users` - Obtener todos los usuarios
-- `GET /users/:id` - Obtener usuario por ID
-- `POST /users` - Crear nuevo usuario
-
-### Task Assignment
-
-- `POST /tasks/:id/assign` - Asignar tarea a usuario
-- `GET /users/:id/tasks` - Obtener tareas asignadas a usuario
-
-## 🚀 Cómo Extender
-
-### Agregar Nuevo Dominio
-
-1. Crear carpeta en `src/domains/nuevo-dominio/`
-2. Crear `router.ts` y `handlers.ts`
-3. Registrar el router en `src/index.ts`
-
-### Agregar Nueva Funcionalidad a Dominio Existente
-
-1. Agregar método en el Handler correspondiente
-2. Registrar la ruta en el Router del dominio
-
-## 🔧 Ventajas de esta Arquitectura
-
-- **Escalabilidad**: Fácil agregar nuevos dominios
-- **Mantenibilidad**: Código organizado por contexto de negocio
-- **Testabilidad**: Handlers aislados fáciles de testear
-- **Reutilización**: Dominios independientes reutilizables
-- **Separación de Concerns**: Routing vs Business Logic
-
-## 🛠️ Desarrollo
+### 1. **Installation**
 
 ```bash
-# Instalar dependencias
 npm install
+```
 
-# Desarrollo
+### 2. **Configuration**
+
+```bash
+# Configure environment variables in .dev.vars
+# Update JWT_SECRET and D1 configuration
+```
+
+### 3. **Migrations**
+
+```bash
+# Run database migrations
+npx wrangler d1 migrations apply DB_NAME
+```
+
+### 4. **Local Development**
+
+```bash
 npm run dev
+```
 
-# Build
-npm run build
+### 5. **Deployment**
 
-# Deploy
+```bash
 npm run deploy
 ```
 
-## 📝 Próximos Pasos
+### 6. **Testing with Bruno**
 
-- [ ] Implementar validación de esquemas (Zod)
-- [ ] Agregar middleware de autenticación
-- [ ] Implementar persistencia de datos (D1)
-- [ ] Agregar tests unitarios por dominio
-- [ ] Implementar logging estructurado
+- Open Bruno and load the collection from `api_docs/`
+- Configure variables in `environments/Local.bru`
+- Login to get JWT token
+- Test all documented endpoints
+
+## 📋 **Main Endpoints**
+
+### 🔐 **Authentication**
+
+- `POST /auth/login` - Login and get JWT
+- `POST /auth/logout` - Logout (invalidate token)
+
+### 👥 **Users** (Admin only)
+
+- `POST /users` - Create user (complete validations)
+- `GET /users` - List users (requires auth)
+- `GET /users/:id` - Get specific user
+
+### 📋 **Tasks** (Complete functionality)
+
+- `GET /tasks` - **List with advanced pagination and filters**
+- `GET /tasks/:id` - Get specific task
+- `POST /tasks` - Create new task (complete validations)
+- `PUT /tasks/:id` - Update task (partial update)
+- `DELETE /tasks/:id` - Delete task
+
+## 🎯 **Featured Functionality**
+
+### **Advanced Pagination & Filters**
+
+```bash
+# Real usage examples:
+GET /tasks?page=1&limit=20&status=pending&priority=high
+GET /tasks?assignedTo=USER_ID&sortBy=dueDate&sortOrder=ASC
+GET /tasks?createdBy=USER_ID&status=in_progress
+```
+
+### **Authentication Middleware**
+
+```typescript
+// Automatic route protection
+usersRouter.get('/', requireAuth, getAllUsersHandler);
+usersRouter.post('/', requireAdmin, requireJSON, createUserHandler);
+```
+
+### **Robust Validations**
+
+```typescript
+// Email, password, required fields validation
+// Assigned user existence verification
+// Enum validation (status, priority)
+// Date format validation
+```
+
+### **Functional Architecture**
+
+```typescript
+// Handlers as pure functions
+export const createTaskHandler = async (request, env, ctx) => { ... }
+export const getAllTasksHandler = async (request, env, ctx) => { ... }
+```
+
+## 🔧 **Next Steps**
+
+1. **Implement unit testing** with Vitest
+2. **Implement rate limiting** with Cloudflare Workers KV
+3. **✨ Bonus AI Feature**: Summary endpoint with AI (OpenAI/Gemini)
+4. **Performance optimizations** and caching
+
+## 📚 **Additional Documentation**
+
+- **API Docs**: See `/api_docs/README.md` for complete Bruno documentation
+- **Database Schema**: See `/migrations` for DB structure
+- **Architecture**: Code organized by domains with shared utilities
+
+---

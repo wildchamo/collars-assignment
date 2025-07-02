@@ -1,0 +1,64 @@
+meta {
+  name: Get All Tasks (Paginated & Filtered)
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/tasks?page=1&limit=10&status=pending&priority=high&sortBy=dueDate&sortOrder=ASC
+  body: none
+  auth: none
+}
+
+params:query {
+  page: 1
+  limit: 10
+  status: pending
+  priority: high
+  sortBy: dueDate
+  sortOrder: ASC
+  ~assignedTo: 12345
+  ~createdBy: 67890
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+docs {
+  # Get All Tasks with Pagination and Filtering
+
+  ## Query Parameters:
+
+  ### Pagination:
+  - `page`: Page number (default: 1)
+  - `limit`: Items per page (default: 10, max: 100)
+
+  ### Filters:
+  - `status`: pending, in_progress, completed
+  - `priority`: low, medium, high
+  - `assignedTo`: User ID assigned to task
+  - `createdBy`: User ID who created the task
+
+  ### Sorting:
+  - `sortBy`: title, status, priority, dueDate, createdAt, updatedAt (default: createdAt)
+  - `sortOrder`: ASC, DESC (default: DESC)
+
+  ## Examples:
+
+  ### Basic pagination:
+  `GET /tasks?page=1&limit=5`
+
+  ### Filter by status and priority:
+  `GET /tasks?status=pending&priority=high`
+
+  ### Get my assigned tasks:
+  `GET /tasks?assignedTo=USER_ID&page=1&limit=20`
+
+  ### Get tasks I created:
+  `GET /tasks?createdBy=USER_ID`
+
+  ### Sort by due date ascending:
+  `GET /tasks?sortBy=dueDate&sortOrder=ASC`
+}

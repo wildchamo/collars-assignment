@@ -1,0 +1,71 @@
+meta {
+  name: Create User (Admin Only)
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/users
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "password": "SecurePass123!",
+    "role": "user",
+    "phoneNumber": "+1234567890"
+  }
+}
+
+docs {
+  # Create User (Admin Only)
+
+  Create a new user in the system. Only administrators can create users.
+
+  ## Required Fields:
+  - `name`: User's full name
+  - `email`: Valid email address
+  - `password`: Secure password
+  - `phoneNumber`: Phone number
+
+  ## Optional Fields:
+  - `role`: "admin" or "user" (default: "user")
+
+  ## Validations:
+  - Email format validation
+  - Password strength validation
+  - Email uniqueness check
+  - Admin role required to access this endpoint
+
+  ## Examples:
+
+  ### Regular User:
+  ```json
+  {
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "password": "MyPassword456!",
+    "role": "user",
+    "phoneNumber": "+0987654321"
+  }
+  ```
+
+  ### Admin User:
+  ```json
+  {
+    "name": "Admin User",
+    "email": "admin@company.com",
+    "password": "AdminPass789!",
+    "role": "admin",
+    "phoneNumber": "+1122334455"
+  }
+  ```
+}

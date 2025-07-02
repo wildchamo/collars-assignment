@@ -1,0 +1,50 @@
+meta {
+  name: Delete Task
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/tasks/{{taskId}}
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+docs {
+  # Delete Task
+
+  Delete a task permanently from the system.
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Response:
+  Returns a success message when the task is deleted successfully.
+
+  ```json
+  {
+    "success": true,
+    "data": {
+      "message": "Task deleted successfully"
+    }
+  }
+  ```
+
+  ## Error Cases:
+  - `400`: Task ID is required
+  - `404`: Task not found
+  - `401`: Unauthorized (no valid token)
+  - `500`: Internal server error
+
+  ## Example:
+  `DELETE /tasks/123`
+}
