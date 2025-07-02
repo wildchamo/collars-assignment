@@ -49,15 +49,13 @@ export const requireAuth = async (request: IRequest, env: Env): Promise<Response
  * Middleware to check if user has admin role
  * Should be used AFTER requireAuth middleware
  */
-export const requireAdmin = async (request: IRequest, env: Env): Promise<Response | void> => {
+export const requireAdmin = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response | void> => {
 	// First run requireAuth to extract and validate user info
 
 	await requireAuth(request, env);
 
 	// At this point, user info should be attached to request by requireAuth
 	const user = (request as any).user;
-
-	console.log(user)
 
 	if (!user) {
 		return errorResponses.unauthorized('Authentication required');
@@ -67,7 +65,5 @@ export const requireAdmin = async (request: IRequest, env: Env): Promise<Respons
 		return errorResponses.forbidden('Admin access required');
 	}
 
-
-	console.log("IS ADMIN")
 	// If user is admin, continue to next handler
 };
