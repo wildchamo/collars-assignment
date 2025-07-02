@@ -10,10 +10,10 @@ declare namespace Cloudflare {
 	}
 }
 interface Env extends Cloudflare.Env {
+	JWT_TOKEN: string;
 	DB: D1Database;
 	FREE_USER_RATE_LIMITER: RateLimiter;
 	LOGGED_USER_RATE_LIMITER: RateLimiter;
-	JWT_TOKEN: string;
 
 }
 

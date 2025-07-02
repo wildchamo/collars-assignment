@@ -28,6 +28,8 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 		// Generate a key based on endpoint for free users
 		// This means all unauthenticated users share the same limit per endpoint
 		key = `${pathname}-free-user`;
+
+		console.log(key)
 		const { success } = await FREE_USER_RATE_LIMITER.limit(key);
 
 		// If limit is exceeded, return 429 error (Too Many Requests)
