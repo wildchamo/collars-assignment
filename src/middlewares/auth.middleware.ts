@@ -1,5 +1,4 @@
 import { IRequest } from 'itty-router';
-import { ApiResponse } from '../shared/types';
 import { verifyJWT } from '../shared/jwt.utils';
 import { errorResponses } from '../shared/response.utils';
 
