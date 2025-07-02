@@ -253,3 +253,16 @@ export const getAllTasksHandler = async (request, env, ctx) => { ... }
 - **Architecture**: Code organized by domains with shared utilities
 
 ---
+
+testing,
+rate limit
+
+probar todos los endpoint
+
+bonus
+
+testing approach
+
+architecture decisions
+
+testing
