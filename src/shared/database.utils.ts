@@ -16,7 +16,7 @@ export const userQueries = {
 	 */
 	findById: async (db: D1Database, id: string) => {
 		return await db.prepare(
-			'SELECT id, name, email, role FROM users WHERE id = ?'
+			'SELECT * FROM users WHERE id = ?'
 		).bind(id).first();
 	},
 

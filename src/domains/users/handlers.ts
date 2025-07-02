@@ -25,24 +25,32 @@ export const getAllUsersHandler = async (request: IRequest, env: Env, ctx: Execu
 /**
  * Get user by ID handler
  */
-export const getUserByIdHandler = async (request: IRequest): Promise<Response> => {
-	const { id } = request.params;
+export const getUserByIdHandler = async (request: IRequest, env: Env, ctx: ExecutionContext): Promise<Response> => {
+	try {
+		// Extract ID from route parameters - itty-router automatically parses :id into request.params.id
+		const { id } = request.params;
+		const { DB } = env as Env;
 
-	// TODO: Implement user retrieval logic
-	const response: ApiResponse<User> = {
-		success: true,
-		data: {
-			id,
-			name: 'Sample User',
-			email: 'user@example.com',
-			role: 'user',
-			createdAt: new Date()
+		if (!id) {
+			return errorResponses.badRequest('User ID is required');
 		}
-	};
 
-	return new Response(JSON.stringify(response), {
-		headers: { 'Content-Type': 'application/json' }
-	});
+		// Query user from database using userQueries utility
+		const user = await userQueries.findById(DB, id);
+
+		if (!user) {
+			return errorResponses.notFound('User not found');
+		}
+
+		// Remove password from response for security
+		const { password, ...userWithoutPassword } = user;
+
+		return successResponses.ok(userWithoutPassword);
+
+	} catch (error) {
+		console.error('Get user by ID error:', error);
+		return errorResponses.internalError();
+	}
 };
 
 /**
