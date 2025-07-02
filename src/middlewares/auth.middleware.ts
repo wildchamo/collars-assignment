@@ -13,8 +13,6 @@ export const requireAuth = async (request: IRequest, env: Env, ctx: ExecutionCon
 		// Extract token from Authorization header
 		const token = request.headers.get('authorization');
 
-		console.log(token)
-
 		if (!token) {
 			return errorResponses.unauthorized('No token provided');
 		}

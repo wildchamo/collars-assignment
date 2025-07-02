@@ -39,7 +39,8 @@ export const errorResponses = {
 	forbidden: (message: string = 'Forbidden') => createErrorResponse(message, 403),
 	notFound: (message: string = 'Not found') => createErrorResponse(message, 404),
 	conflict: (message: string = 'Resource already exists') => createErrorResponse(message, 409),
-	internalError: (message: string = 'Internal server error') => createErrorResponse(message, 500)
+	internalError: (message: string = 'Internal server error') => createErrorResponse(message, 500),
+	rateLimitExceeded: (message: string = 'Rate limit exceeded') => createErrorResponse(message, 429)
 };
 
 /**
