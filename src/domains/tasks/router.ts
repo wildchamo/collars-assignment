@@ -18,7 +18,7 @@ tasksRouter.get('/:id', requireAuth, getTaskByIdHandler);
 
 // POST /tasks - Create a new task
 tasksRouter.post('/', requireAuth, requireJSON,
-	requireFields(['title']), createTaskHandler);
+	requireFields(['title', 'description', 'dueDate']), createTaskHandler);
 
 // PUT /tasks/:id - Update an existing task
 tasksRouter.put('/:id', requireAuth, requireJSON, updateTaskHandler);
