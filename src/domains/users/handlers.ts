@@ -1,5 +1,4 @@
 import { IRequest } from 'itty-router';
-import { ApiResponse } from '../../shared/types';
 import { userQueries } from '../../shared/database.utils';
 import { isValidEmail, isValidPassword } from '../../shared/validation.utils';
 import { errorResponses, successResponses } from '../../shared/response.utils';
