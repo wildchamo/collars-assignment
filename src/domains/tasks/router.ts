@@ -1,22 +1,29 @@
 import { Router } from 'itty-router';
-import { TaskHandlers } from './handlers';
-import { requireAuth } from '../../middlewares';
+import {
+	getAllTasksHandler,
+	getTaskByIdHandler,
+	createTaskHandler,
+	updateTaskHandler,
+	deleteTaskHandler
+} from './handlers';
+import { requireAuth, requireJSON, requireFields } from '../../middlewares';
 
 const tasksRouter = Router({ base: '/tasks' });
 
 // GET /tasks - Retrieve all tasks with pagination and filtering options
-tasksRouter.get('/', requireAuth, TaskHandlers.getAllTasks);
+tasksRouter.get('/', requireAuth, getAllTasksHandler);
 
 // GET /tasks/:id - Retrieve a specific task by ID
-tasksRouter.get('/:id', requireAuth, TaskHandlers.getTaskById);
+tasksRouter.get('/:id', requireAuth, getTaskByIdHandler);
 
 // POST /tasks - Create a new task
-tasksRouter.post('/', requireAuth, TaskHandlers.createTask);
+tasksRouter.post('/', requireAuth, requireJSON,
+	requireFields(['title']), createTaskHandler);
 
 // PUT /tasks/:id - Update an existing task
-tasksRouter.put('/:id', requireAuth, TaskHandlers.updateTask);
+tasksRouter.put('/:id', requireAuth, requireJSON, updateTaskHandler);
 
 // DELETE /tasks/:id - Delete a task
-tasksRouter.delete('/:id', requireAuth, TaskHandlers.deleteTask);
+tasksRouter.delete('/:id', requireAuth, deleteTaskHandler);
 
 export { tasksRouter };
