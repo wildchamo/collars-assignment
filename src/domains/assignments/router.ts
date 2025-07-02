@@ -1,12 +1,17 @@
 import { Router } from 'itty-router';
-import { AssignmentHandlers } from './handlers';
+import {
+	assignTaskHandler,
+	getUserTasksHandler,
+} from './handlers';
+import { requireAuth, requireJSON, requireFields } from '../../middlewares';
 
 const assignmentsRouter = Router();
 
 // POST /tasks/:id/assign - Assign a task to a user
-assignmentsRouter.post('/tasks/:id/assign', AssignmentHandlers.assignTask);
+assignmentsRouter.post('/tasks/:id/assign', requireAuth, requireJSON,
+	requireFields(['userId']), assignTaskHandler);
 
-// GET /users/:id/tasks - Get all tasks assigned to a specific user
-assignmentsRouter.get('/users/:id/tasks', AssignmentHandlers.getUserTasks);
+// GET /users/:id/tasks - Get all tasks assigned to a specific user (with optional filters)
+assignmentsRouter.get('/users/:id/tasks', requireAuth, getUserTasksHandler);
 
 export { assignmentsRouter };

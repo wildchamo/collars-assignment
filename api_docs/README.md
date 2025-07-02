@@ -15,6 +15,11 @@ api_docs/
 │   └── logout.bru               # POST /auth/logout
 ├── users/
 │   └── create-user.bru          # POST /users (Admin only)
+├── assignments/
+│   ├── 01-assign-task.bru       # POST /tasks/:id/assign
+│   ├── 02-unassign-task.bru     # DELETE /tasks/:id/assign
+│   ├── 03-get-user-tasks.bru    # GET /users/:id/tasks
+│   └── 04-get-task-assignments.bru # GET /tasks/:id/assignments
 └── tasks/
     ├── 01-get-all-tasks.bru     # GET /tasks (with pagination and filters)
     ├── 02-get-task-by-id.bru    # GET /tasks/:id
@@ -78,6 +83,35 @@ POST /users
   "role": "user",
   "phoneNumber": "+1234567890"
 }
+```
+
+### 📋 Task Assignments
+
+#### Assign Task - `assignments/01-assign-task.bru`
+
+```json
+POST /tasks/:id/assign
+{
+  "userId": "12345"
+}
+```
+
+#### Unassign Task - `assignments/02-unassign-task.bru`
+
+```http
+DELETE /tasks/:id/assign
+```
+
+#### Get User Tasks - `assignments/03-get-user-tasks.bru`
+
+```
+GET /users/:id/tasks?status=pending&priority=high
+```
+
+#### Get Task Assignment Info - `assignments/04-get-task-assignments.bru`
+
+```
+GET /tasks/:id/assignments
 ```
 
 ### 📋 Tasks

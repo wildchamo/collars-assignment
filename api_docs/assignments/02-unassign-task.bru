@@ -1,0 +1,49 @@
+meta {
+  name: Unassign Task
+  type: http
+  seq: 2
+}
+
+delete {
+  url: {{baseUrl}}/tasks/{{taskId}}/assign
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+docs {
+  # Unassign Task
+
+  Remove the current assignment from a task (unassign it).
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Validations:
+  - Task must exist
+  - Task must be currently assigned
+  - User must be authenticated
+
+  ## Response:
+  Returns confirmation of unassignment and updated task information.
+
+  ```json
+  {
+    "success": true,
+    "data": {
+      "taskId": "1",
+      "unassignedAt": "2024-01-15T10:30:00.000Z",
+      "task": { ... },
+      "message": "Task successfully unassigned"
+    }
+  }
+  ```
+}

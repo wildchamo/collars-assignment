@@ -20,6 +20,13 @@ A complete task management API built with **Cloudflare Workers**, **TypeScript**
 - **PUT /tasks/:id** - Update task (partial)
 - **DELETE /tasks/:id** - Delete task
 
+### ✅ **Task Assignment System**
+
+- **POST /tasks/:id/assign** - Assign task to user
+- **DELETE /tasks/:id/assign** - Unassign task
+- **GET /users/:id/tasks** - Get user's assigned tasks (with filters)
+- **GET /tasks/:id/assignments** - Get task assignment information
+
 ### ✅ **Advanced Pagination & Filters**
 
 ```
@@ -82,7 +89,7 @@ src/
 │   ├── auth/            # Authentication (login, logout)
 │   ├── users/           # User management
 │   ├── tasks/           # Task management
-│   └── assignments/     # Assignments (pending)
+│   └── assignments/     # Task assignments system
 ├── middlewares/         # Reusable middleware
 │   ├── auth.middleware.ts
 │   ├── require-*.middleware.ts
@@ -188,6 +195,13 @@ npm run deploy
 - `POST /tasks` - Create new task (complete validations)
 - `PUT /tasks/:id` - Update task (partial update)
 - `DELETE /tasks/:id` - Delete task
+
+### 🔗 **Task Assignments**
+
+- `POST /tasks/:id/assign` - Assign task to user (with validations)
+- `DELETE /tasks/:id/assign` - Unassign task
+- `GET /users/:id/tasks` - Get user's assigned tasks (with filters & statistics)
+- `GET /tasks/:id/assignments` - Get task assignment information
 
 ## 🎯 **Featured Functionality**
 

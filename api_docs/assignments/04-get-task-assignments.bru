@@ -1,0 +1,77 @@
+meta {
+  name: Get Task Assignment Info
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/tasks/{{taskId}}/assignments
+  body: none
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+docs {
+  # Get Task Assignment Information
+
+  Retrieve detailed assignment information for a specific task.
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Response:
+  Returns complete task information with assignment details and creator information.
+
+  ```json
+  {
+    "success": true,
+    "data": {
+      "task": {
+        "id": "1",
+        "title": "Complete project",
+        "description": "Full project completion",
+        "status": "in_progress",
+        "priority": "high",
+        "due_date": "2024-01-20T10:00:00.000Z",
+        "assigned_to": "12345",
+        "created_by": "67890",
+        "created_at": "2024-01-10T09:00:00.000Z",
+        "updated_at": "2024-01-15T14:30:00.000Z",
+        "assigned_to_name": "John Doe",
+        "assigned_to_email": "john@example.com",
+        "created_by_name": "Jane Manager",
+        "created_by_email": "jane@example.com"
+      },
+      "currentAssignment": {
+        "isAssigned": true,
+        "assignedTo": {
+          "id": "12345",
+          "name": "John Doe",
+          "email": "john@example.com"
+        },
+        "assignedAt": "2024-01-15T14:30:00.000Z"
+      },
+      "createdBy": {
+        "id": "67890",
+        "name": "Jane Manager",
+        "email": "jane@example.com"
+      }
+    }
+  }
+  ```
+
+  ## Use Cases:
+
+  - Check who is currently assigned to a task
+  - Get complete task details with assignment history
+  - Verify task ownership and assignment status
+  - Display assignment information in task management UI
+}

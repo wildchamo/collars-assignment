@@ -1,0 +1,59 @@
+meta {
+  name: Assign Task to User
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/tasks/{{taskId}}/assign
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer {{authToken}}
+  Content-Type: application/json
+}
+
+vars {
+  taskId: 1
+}
+
+body:json {
+  {
+    "userId": "{{userId}}"
+  }
+}
+
+docs {
+  # Assign Task to User
+
+  Assign a specific task to a user.
+
+  ## Path Parameters:
+  - `id`: Task ID (required)
+
+  ## Required Fields:
+  - `userId`: ID of the user to assign the task to
+
+  ## Validations:
+  - Task must exist
+  - User must exist
+  - User must be authenticated
+
+  ## Response:
+  Returns assignment details including updated task information and assigned user details.
+
+  ```json
+  {
+    "success": true,
+    "data": {
+      "taskId": "1",
+      "userId": "12345",
+      "assignedAt": "2024-01-15T10:30:00.000Z",
+      "task": { ... },
+      "message": "Task successfully assigned to John Doe"
+    }
+  }
+  ```
+}
