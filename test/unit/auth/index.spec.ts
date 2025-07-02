@@ -105,6 +105,7 @@ describe('Auth Router', () => {
 			const response = await authRouter.fetch(request, mockEnv, mockCtx);
 			await waitOnExecutionContext(mockCtx);
 
+			console.log("RESPONSEE", response)
 			expect(response.status).toBe(404);
 		});
 	});

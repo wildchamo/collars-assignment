@@ -7,6 +7,7 @@ import {
 	deleteTaskHandler
 } from './handlers';
 import { requireAuth, requireJSON, requireFields, rateLimit } from '../../middlewares';
+import { errorResponses } from '../../shared/response.utils';
 
 const tasksRouter = Router({ base: '/tasks' });
 
@@ -25,5 +26,7 @@ tasksRouter.put('/:id', requireAuth, requireJSON, rateLimit, updateTaskHandler);
 
 // DELETE /tasks/:id - Delete a task
 tasksRouter.delete('/:id', requireAuth, rateLimit, deleteTaskHandler);
+
+tasksRouter.all('*', () => errorResponses.notFound());
 
 export { tasksRouter };

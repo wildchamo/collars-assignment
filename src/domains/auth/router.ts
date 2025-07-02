@@ -1,6 +1,7 @@
 import { Router } from 'itty-router';
 import { loginHandler, logoutHandler } from './handlers';
 import { requireJSON, requireFields, requireAuth, rateLimit } from '../../middlewares';
+import { errorResponses } from '../../shared/response.utils';
 
 const authRouter = Router({ base: '/auth' });
 
@@ -18,5 +19,7 @@ authRouter.post('/logout',
 	rateLimit,
 	logoutHandler
 );
+
+authRouter.all('*', () => errorResponses.notFound());
 
 export { authRouter };

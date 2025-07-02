@@ -20,6 +20,7 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 	// Extract pathname from URL to create endpoint-specific keys
 	const { pathname } = new URL(request.url);
 
+
 	// Variable to store the unique rate limit key
 	let key: string;
 
@@ -29,8 +30,7 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 		// This means all unauthenticated users share the same limit per endpoint
 		key = `${pathname}-free-user`;
 
-		console.log(key)
-		const { success } = await FREE_USER_RATE_LIMITER.limit({ key });
+		const { success } = await FREE_USER_RATE_LIMITER.limit({ key: key });
 
 		// If limit is exceeded, return 429 error (Too Many Requests)
 		if (!success) {
@@ -41,7 +41,7 @@ export const rateLimit = async (request: IRequest, env: Env, ctx: ExecutionConte
 		// Generate a unique key combining endpoint and user token
 		// This allows individual limits per authenticated user
 		key = `${pathname}-logged-user-${token}`;
-		const { success } = await LOGGED_USER_RATE_LIMITER.limit({ key });
+		const { success } = await LOGGED_USER_RATE_LIMITER.limit({ key: key });
 
 		// If limit is exceeded, return 429 error (Too Many Requests)
 		if (!success) {
