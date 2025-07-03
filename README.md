@@ -180,8 +180,7 @@ npm run test:watch
 - Clear business logic boundaries
 - Facilitates team collaboration
 
-```
-src/domains/
+```src/domains/
 ├── auth/        # Authentication & authorization
 ├── users/       # User management
 ├── tasks/       # Task operations
@@ -298,6 +297,62 @@ test/
 ---
 
 ## 🗄️ **SQL Schema Migration Scripts**
+
+### **Database Entity-Relationship Diagram**
+
+```mermaid
+erDiagram
+    USERS {
+        int id PK
+        text name
+        text email UK
+        text phone_number
+        text password
+        text role
+        int token_version
+        datetime created_at
+        datetime updated_at
+    }
+
+    TASKS {
+        int id PK
+        text title
+        text description
+        text status
+        text priority
+        datetime due_date
+        int assigned_to FK
+        int created_by FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    ADDRESSES {
+        int id PK
+        text address_line1
+        text address_line2
+        text city
+        text state_or_province
+        text postal_code
+        text country
+        boolean is_default
+        int user_id FK
+        datetime created_at
+        datetime updated_at
+    }
+
+    TOKEN_BLACKLIST {
+        int id PK
+        text token UK
+        datetime invalidated_at
+        datetime expires_at
+        datetime created_at
+    }
+
+    USERS ||--o{ ADDRESSES : "has"
+    USERS ||--o{ TASKS : "creates"
+    USERS ||--o{ TASKS : "assigned_to"
+```
 
 ### **Migration System**
 
