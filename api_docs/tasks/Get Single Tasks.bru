@@ -5,20 +5,9 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/tasks
+  url: {{baseUrl}}/tasks/4
   body: none
   auth: none
-}
-
-params:query {
-  ~page: 1
-  ~limit: 10
-  ~status: pending
-  ~priority: high
-  ~sortBy: dueDate
-  ~sortOrder: ASC
-  ~assignedTo: 
-  ~createdBy: 
 }
 
 headers {
