@@ -506,7 +506,6 @@ npx wrangler d1 execute collars-db --command="SELECT * FROM d1_migrations;"
 
 - [ ] AI Bonus Features
 - [ ] Advanced CI/CD Pipeline
- 2
 ---
 
 ## 📚 **Additional Documentation**
