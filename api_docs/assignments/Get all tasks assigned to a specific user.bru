@@ -1,0 +1,15 @@
+meta {
+  name: Get all tasks assigned to a specific user
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/users/1/tasks
+  body: none
+  auth: inherit
+}
+
+headers {
+  authorization: {{auth-token}}
+}

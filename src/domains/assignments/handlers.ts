@@ -10,6 +10,9 @@ export const assignTaskHandler = async (request: IRequest, env: Env, ctx: Execut
 		const { userId } = (request as any).parsedBody;
 		const { DB } = env as Env;
 
+		console.log('userId', userId);
+		console.log('id', id);
+
 		// Get current user from auth middleware
 		const currentUser = (request as any).user;
 		if (!currentUser) {
@@ -80,8 +83,11 @@ export const getUserTasksHandler = async (request: IRequest, env: Env, ctx: Exec
 		const { id } = request.params; // User ID
 		const { DB } = env as Env;
 
+
 		// Get current user from auth middleware
 		const currentUser = (request as any).user;
+
+
 		if (!currentUser) {
 			return errorResponses.unauthorized('User authentication required');
 		}

@@ -1,0 +1,21 @@
+meta {
+  name: Assign task to user
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/tasks/1/assign
+  body: json
+  auth: inherit
+}
+
+headers {
+  authorization: {{auth-token}}
+}
+
+body:json {
+  {
+    "userId": 3
+  }
+}

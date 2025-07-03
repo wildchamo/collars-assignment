@@ -25,11 +25,11 @@ const router = Router();
 router.get('/', () => new Response('OK'));
 
 // Register domain routers
+router.all('/tasks/*/assign', assignmentsRouter.fetch);
+router.all('/users/*/tasks', assignmentsRouter.fetch);
 router.all('/auth/*', authRouter.fetch);
 router.all('/users/*', usersRouter.fetch);
 router.all('/tasks/*', tasksRouter.fetch);
-router.all('/tasks/*/assign', assignmentsRouter.fetch);
-router.all('/users/*/tasks', assignmentsRouter.fetch);
 
 // Catch all for unmatched routes
 router.all('*', () => new Response('Not found', { status: 404 }));
