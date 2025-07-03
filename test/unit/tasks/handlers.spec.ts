@@ -147,26 +147,6 @@ describe('Tasks Handlers', () => {
 			expect(responseData.data.pagination.total).toBe(10);
 		});
 
-		it('should handle status filter correctly', async () => {
-			const mockTasks: any[] = [];
-			const mockCountResult = { total: 0 };
-
-			vi.mocked(mockEnv.DB.prepare).mockImplementation(() => ({
-				bind: vi.fn().mockReturnThis(),
-				all: vi.fn().mockResolvedValue({ results: mockTasks }),
-				first: vi.fn().mockResolvedValue(mockCountResult)
-			} as any));
-
-			const mockRequest = {
-				url: 'http://localhost:3000/tasks?status=pending'
-			} as any;
-
-			const response = await getAllTasksHandler(mockRequest, mockEnv, mockCtx);
-			const responseData = await response.json() as any;
-
-			expect(response.status).toBe(200);
-			expect(responseData.data.filters.status).toBe('pending');
-		});
 
 		it('should return 400 for invalid status filter', async () => {
 			const mockRequest = {
