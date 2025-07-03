@@ -3,10 +3,12 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"deploy": "wrangler deploy",
+		"deploy": "npm run test:ci && wrangler deploy",
+		"deploy:force": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "vitest && wrangler dev",
 		"test": "vitest",
+		"test:ci": "vitest run",
 		"test:coverage": "npm run test test/index.spec.ts -- --coverage",
 		"cf-typegen": "wrangler types"
 	},
