@@ -7,9 +7,9 @@ const authRouter = Router({ base: '/auth' });
 
 // POST /auth/login - Authenticate user and get token
 authRouter.post('/login',
+	rateLimit,
 	requireJSON,
 	requireFields(['email', 'password']),
-	rateLimit,
 	loginHandler
 );
 

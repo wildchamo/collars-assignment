@@ -1,28 +1,17 @@
 meta {
-  name: Create User (Admin Only)
+  name: get single user
   type: http
-  seq: 1
+  seq: 3
 }
 
-post {
-  url: {{baseUrl}}/users
-  body: json
+get {
+  url: {{baseUrl}}/users/2
+  body: none
   auth: none
 }
 
 headers {
   authorization: {{auth-token}}
-  Content-Type: application/json
-}
-
-body:json {
-  {
-    "name": "John Doe",
-    "email": "john.doe2@example.com",
-    "password": "1234567",
-    "role": "user",
-    "phoneNumber": "+1234567890"
-  }
 }
 
 docs {

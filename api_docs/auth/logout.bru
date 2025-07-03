@@ -11,18 +11,18 @@ post {
 }
 
 headers {
-  Authorization: Bearer {{authToken}}
   Content-Type: application/json
+  Authorization: {{auth-token}}
 }
 
 docs {
   # Logout
-
+  
   Invalidate user session and logout from all devices.
-
+  
   ## Headers:
   - `Authorization`: Bearer token (required)
-
+  
   ## Response:
   ```json
   {
@@ -32,7 +32,7 @@ docs {
     }
   }
   ```
-
+  
   ## Note:
   This endpoint invalidates the current token and logs the user out from all devices by incrementing the token version.
 }

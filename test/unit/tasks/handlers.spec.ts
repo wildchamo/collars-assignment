@@ -99,9 +99,33 @@ describe('Tasks Handlers', () => {
 			});
 		});
 
-		it('should handle pagination parameters correctly', async () => {
+		it('should return empty array when no tasks found', async () => {
 			const mockTasks: any[] = [];
 			const mockCountResult = { total: 0 };
+
+			vi.mocked(mockEnv.DB.prepare).mockImplementation(() => ({
+				bind: vi.fn().mockReturnThis(),
+				all: vi.fn().mockResolvedValue({ results: mockTasks }),
+				first: vi.fn().mockResolvedValue(mockCountResult)
+			} as any));
+
+			const mockRequest = {
+				url: 'http://localhost:3000/tasks'
+			} as any;
+
+			const response = await getAllTasksHandler(mockRequest, mockEnv, mockCtx);
+			const responseData = await response.json() as any;
+
+			expect(response.status).toBe(200);
+			expect(responseData.success).toBe(true);
+			expect(responseData.data).toEqual([]);
+		});
+
+		it('should handle pagination parameters correctly when tasks exist', async () => {
+			const mockTasks = [
+				{ id: '1', title: 'Task 1', status: 'pending' }
+			];
+			const mockCountResult = { total: 10 };
 
 			vi.mocked(mockEnv.DB.prepare).mockImplementation(() => ({
 				bind: vi.fn().mockReturnThis(),
@@ -117,8 +141,10 @@ describe('Tasks Handlers', () => {
 			const responseData = await response.json() as any;
 
 			expect(response.status).toBe(200);
+			expect(responseData.success).toBe(true);
 			expect(responseData.data.pagination.page).toBe(2);
 			expect(responseData.data.pagination.limit).toBe(5);
+			expect(responseData.data.pagination.total).toBe(10);
 		});
 
 		it('should handle status filter correctly', async () => {

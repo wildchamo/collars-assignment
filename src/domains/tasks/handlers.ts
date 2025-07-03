@@ -14,7 +14,7 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 
 		// Pagination parameters
 		const page = parseInt(searchParams.get('page') || '1');
-		const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 100); // Max 100 items per page
+		const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 20); // Max 20 items per page
 		const offset = (page - 1) * limit;
 
 		// Validate pagination parameters
@@ -32,7 +32,7 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 		const createdBy = searchParams.get('createdBy');
 
 		// Sorting parameters
-		const sortBy = searchParams.get('sortBy') || 'createdAt';
+		const sortBy = searchParams.get('sortBy') || 'created_at';
 		const sortOrder = searchParams.get('sortOrder')?.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
 
 		// Validate filter values
@@ -46,9 +46,9 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 			return errorResponses.badRequest('Invalid priority filter. Must be: low, medium, or high');
 		}
 
-		const validSortFields = ['title', 'status', 'priority', 'dueDate', 'createdAt', 'updatedAt'];
+		const validSortFields = ['title', 'status', 'priority', 'due_date', 'created_at', 'updated_at'];
 		if (!validSortFields.includes(sortBy)) {
-			return errorResponses.badRequest('Invalid sortBy field. Must be: title, status, priority, dueDate, createdAt, or updatedAt');
+			return errorResponses.badRequest('Invalid sortBy field. Must be: title, status, priority, due_date, created_at, or updated_at');
 		}
 
 		// Build WHERE clause dynamically
@@ -66,12 +66,12 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 		}
 
 		if (assignedTo) {
-			whereConditions.push('assignedTo = ?');
+			whereConditions.push('assigned_to = ?');
 			whereParams.push(assignedTo);
 		}
 
 		if (createdBy) {
-			whereConditions.push('createdBy = ?');
+			whereConditions.push('created_by = ?');
 			whereParams.push(createdBy);
 		}
 
@@ -81,8 +81,8 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 		// Build the main query
 		const mainQuery = `
 			SELECT
-				id, title, description, status, priority, dueDate,
-				assignedTo, createdBy, createdAt, updatedAt
+				id, title, description, status, priority, due_date,
+				assigned_to, created_by, created_at, updated_at
 			FROM tasks
 			${whereClause}
 			ORDER BY ${sortBy} ${sortOrder}
@@ -104,6 +104,11 @@ export const getAllTasksHandler = async (request: IRequest, env: Env, ctx: Execu
 
 		const tasks = tasksResult.results;
 		const total = (countResult as any)?.total || 0;
+
+		// If no tasks found, return empty array
+		if (total === 0) {
+			return successResponses.ok([]);
+		}
 
 		// Calculate pagination metadata
 		const totalPages = Math.ceil(total / limit);
@@ -213,7 +218,7 @@ export const createTaskHandler = async (request: IRequest, env: Env, ctx: Execut
 		// Insert task into database
 		const result = await DB.prepare(`
 			INSERT INTO tasks (
-				title, description, status, priority, dueDate, assignedTo, createdBy, createdAt, updatedAt
+				title, description, status, priority, due_date, assigned_to, created_by, created_at, updated_at
 			) VALUES (?, ?, ?, ?, ?, ?, ?, datetime("now"), datetime("now"))
 		`).bind(
 			title,
@@ -222,7 +227,7 @@ export const createTaskHandler = async (request: IRequest, env: Env, ctx: Execut
 			priority || 'medium', // Default priority
 			parsedDueDate.toISOString(),
 			assignedTo || null, // Nullable
-			currentUser.id, // createdBy from authenticated user
+			currentUser.id, // created_by from authenticated user
 		).run();
 
 		if (!result.success) {
@@ -310,9 +315,9 @@ export const updateTaskHandler = async (request: IRequest, env: Env, ctx: Execut
 				description = COALESCE(?, description),
 				status = COALESCE(?, status),
 				priority = COALESCE(?, priority),
-				dueDate = COALESCE(?, dueDate),
-				assignedTo = CASE WHEN ? IS NOT NULL THEN ? ELSE assignedTo END,
-				updatedAt = datetime("now")
+				due_date = COALESCE(?, due_date),
+				assigned_to = CASE WHEN ? IS NOT NULL THEN ? ELSE assigned_to END,
+				updated_at = datetime("now")
 			WHERE id = ?
 		`).bind(
 			title || null,
